@@ -1,0 +1,19 @@
+<section class="page">
+  <header>
+    <p class="eyebrow">Events</p>
+    <h1>Browse upcoming events</h1>
+  </header>
+
+  <div class="events-grid">
+    @for (event of events; track event.id) {
+      <article class="event-card">
+        <div>
+          <h2>{{ event.title }}</h2>
+          <p>{{ event.date }} · {{ event.location }}</p>
+        </div>
+
+        <a [routerLink]="['/events', event.id]">View details</a>
+      </article>
+    }
+  </div>
+</section>

@@ -1,0 +1,52 @@
+.page {
+  display: grid;
+  gap: 24px;
+}
+
+.eyebrow {
+  color: #0f766e;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.events-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 180px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+p {
+  margin: 0;
+  color: #6b7280;
+}
+
+a {
+  color: #0f766e;
+  font-weight: 700;
+  text-decoration: none;
+}
