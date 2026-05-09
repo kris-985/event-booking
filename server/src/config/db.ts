@@ -1,4 +1,21 @@
+import dns from 'node:dns';
+
 import mongoose from 'mongoose';
+
+const configureSrvDns = (mongoUri: string): void => {
+  if (!mongoUri.startsWith('mongodb+srv://')) {
+    return;
+  }
+
+  const dnsServers = (process.env.MONGO_DNS_SERVERS ?? '8.8.8.8,1.1.1.1')
+    .split(',')
+    .map((server) => server.trim())
+    .filter(Boolean);
+
+  if (dnsServers.length > 0) {
+    dns.setServers(dnsServers);
+  }
+};
 
 export const connectDB = async (): Promise<void> => {
   const mongoUri = process.env.MONGO_URI;
@@ -6,6 +23,8 @@ export const connectDB = async (): Promise<void> => {
   if (!mongoUri) {
     throw new Error('MONGO_URI is not defined');
   }
+
+  configureSrvDns(mongoUri);
 
   await mongoose.connect(mongoUri);
 };
