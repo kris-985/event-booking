@@ -39,7 +39,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
       return;
     }
 
-    if (quantity > event.capacity) {
+    if (quantity > event.availableSeats) {
       res.status(400).json({ message: 'Not enough seats available' });
       return;
     }
@@ -53,7 +53,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
       totalPrice: event.price * quantity
     });
 
-    event.capacity -= quantity;
+    event.availableSeats -= quantity;
     await event.save();
 
     res.status(201).json(booking);

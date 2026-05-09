@@ -6,7 +6,7 @@ export interface IEvent extends Document {
   location: string;
   date: Date;
   price: number;
-  capacity: number;
+  availableSeats: number;
   imageUrl: string;
   category: string;
   createdAt: Date;
@@ -39,7 +39,7 @@ const eventSchema = new Schema<IEvent>(
       required: true,
       min: 0
     },
-    capacity: {
+    availableSeats: {
       type: Number,
       required: true,
       min: 0
