@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
     const query =
-      req.user?.role === 'admin' ? {} : { userId: new Types.ObjectId(req.user?.id) };
+      req.user?.role === 'admin' ? {} : { userId: new Types.ObjectId(req.user?.userId) };
     const bookings = await Booking.find(query).sort({ createdAt: -1 });
 
     res.json(bookings);
@@ -45,7 +45,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
     }
 
     const booking = await Booking.create({
-      userId: new Types.ObjectId(req.user.id),
+      userId: new Types.ObjectId(req.user.userId),
       eventId: event._id,
       eventTitle: event.title,
       eventDate: event.date,
@@ -71,7 +71,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res, next) => {
       return;
     }
 
-    if (req.user?.role !== 'admin' && booking.userId.toString() !== req.user?.id) {
+    if (req.user?.role !== 'admin' && booking.userId.toString() !== req.user?.userId) {
       res.status(403).json({ message: 'You do not have permission to view this booking' });
       return;
     }

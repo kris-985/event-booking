@@ -4,7 +4,7 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { UserRole } from '../models/User';
 
 export interface AuthUser {
-  id: string;
+  userId: string;
   role: UserRole;
 }
 
@@ -13,7 +13,7 @@ export interface AuthRequest extends Request {
 }
 
 interface TokenPayload extends JwtPayload {
-  id: string;
+  userId: string;
   role: UserRole;
 }
 
@@ -36,8 +36,13 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   try {
     const decoded = jwt.verify(token, jwtSecret) as TokenPayload;
 
+    if (!decoded.userId || !decoded.role) {
+      res.status(401).json({ message: 'Invalid token payload' });
+      return;
+    }
+
     req.user = {
-      id: decoded.id,
+      userId: decoded.userId,
       role: decoded.role
     };
 
