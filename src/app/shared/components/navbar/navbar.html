@@ -1,15 +1,61 @@
 <nav class="navbar" aria-label="Main navigation">
-  <a class="navbar__brand" routerLink="/events">
-    <span class="navbar__mark">EB</span>
-    <span>Event Booking</span>
+  <a class="navbar__brand" routerLink="/" (click)="closeMenu()">
+    <span class="navbar__mark">E</span>
+    <span>Evently</span>
   </a>
 
-  <div class="navbar__links">
-    <a routerLink="/events" routerLinkActive="navbar__link--active">Events</a>
-    <a routerLink="/my-bookings" routerLinkActive="navbar__link--active">My Bookings</a>
-    <a routerLink="/profile" routerLinkActive="navbar__link--active">Profile</a>
-    <a routerLink="/admin" routerLinkActive="navbar__link--active">Admin</a>
-    <a routerLink="/login" routerLinkActive="navbar__link--active">Login</a>
-    <a routerLink="/register" routerLinkActive="navbar__link--active">Register</a>
+  <button
+    class="navbar__toggle"
+    type="button"
+    aria-label="Toggle navigation menu"
+    [attr.aria-expanded]="isMenuOpen"
+    (click)="toggleMenu()"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="navbar__menu" [class.navbar__menu--open]="isMenuOpen">
+    <div class="navbar__links">
+      <a
+        routerLink="/"
+        routerLinkActive="navbar__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMenu()"
+      >
+        Home
+      </a>
+      <a routerLink="/events" routerLinkActive="navbar__link--active" (click)="closeMenu()">
+        Events
+      </a>
+      <a href="#about" (click)="closeMenu()">About</a>
+      <a href="#contact" (click)="closeMenu()">Contact</a>
+      <a routerLink="/my-bookings" routerLinkActive="navbar__link--active" (click)="closeMenu()">
+        My Bookings
+      </a>
+      <a routerLink="/admin" routerLinkActive="navbar__link--active" (click)="closeMenu()">
+        Admin
+      </a>
+    </div>
+
+    <div class="navbar__actions">
+      <a
+        class="navbar__button navbar__button--secondary"
+        routerLink="/login"
+        routerLinkActive="navbar__button--active"
+        (click)="closeMenu()"
+      >
+        Login
+      </a>
+      <a
+        class="navbar__button navbar__button--primary"
+        routerLink="/register"
+        routerLinkActive="navbar__button--active"
+        (click)="closeMenu()"
+      >
+        Register
+      </a>
+    </div>
   </div>
 </nav>

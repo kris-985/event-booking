@@ -8,4 +8,14 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-export class Navbar {}
+export class Navbar {
+  protected isMenuOpen = false;
+
+  protected toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  protected closeMenu(): void {
+    this.isMenuOpen = false;
+  }
+}
