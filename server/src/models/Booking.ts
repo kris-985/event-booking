@@ -1,5 +1,7 @@
 import { Schema, model, Types, type Document } from 'mongoose';
 
+export type BookingStatus = 'active' | 'cancelled';
+
 export interface IBooking extends Document {
   userId: Types.ObjectId;
   eventId: Types.ObjectId;
@@ -7,6 +9,7 @@ export interface IBooking extends Document {
   eventDate: Date;
   quantity: number;
   totalPrice: number;
+  status: BookingStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -41,6 +44,12 @@ const bookingSchema = new Schema<IBooking>(
       type: Number,
       required: true,
       min: 0
+    },
+    status: {
+      type: String,
+      enum: ['active', 'cancelled'],
+      default: 'active',
+      required: true
     }
   },
   {

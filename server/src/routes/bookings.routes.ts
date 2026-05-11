@@ -8,27 +8,23 @@ import { Event } from '../models/Event';
 
 const router = Router();
 
-router.get('/', authMiddleware, async (req: AuthRequest, res, next) => {
-  try {
-    const query =
-      req.user?.role === 'admin' ? {} : { userId: new Types.ObjectId(req.user?.userId) };
-    const bookings = await Booking.find(query).sort({ createdAt: -1 });
-
-    res.json(bookings);
-  } catch (error) {
-    next(error);
-  }
-});
+const getParamId = (value: string | string[] | undefined): string | undefined => {
+  return typeof value === 'string' ? value : undefined;
+};
 
 router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
-    const { eventId, quantity } = req.body as {
+    const { eventId } = req.body as {
       eventId?: string;
-      quantity?: number;
     };
 
-    if (!req.user || !eventId || !quantity || quantity < 1) {
-      res.status(400).json({ message: 'Event id and a valid quantity are required' });
+    if (!req.user) {
+      res.status(401).json({ message: 'Authentication is required' });
+      return;
+    }
+
+    if (!eventId || !Types.ObjectId.isValid(eventId)) {
+      res.status(400).json({ message: 'A valid event id is required' });
       return;
     }
 
@@ -39,8 +35,8 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
       return;
     }
 
-    if (quantity > event.availableSeats) {
-      res.status(400).json({ message: 'Not enough seats available' });
+    if (event.availableSeats <= 0) {
+      res.status(400).json({ message: 'No seats available for this event' });
       return;
     }
 
@@ -49,11 +45,12 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
       eventId: event._id,
       eventTitle: event.title,
       eventDate: event.date,
-      quantity,
-      totalPrice: event.price * quantity
+      quantity: 1,
+      totalPrice: event.price,
+      status: 'active'
     });
 
-    event.availableSeats -= quantity;
+    event.availableSeats -= 1;
     await event.save();
 
     res.status(201).json(booking);
@@ -62,36 +59,75 @@ router.post('/', authMiddleware, async (req: AuthRequest, res, next) => {
   }
 });
 
-router.get('/:id', authMiddleware, async (req: AuthRequest, res, next) => {
+router.get('/my', authMiddleware, async (req: AuthRequest, res, next) => {
   try {
-    const booking = await Booking.findById(req.params.id);
-
-    if (!booking) {
-      res.status(404).json({ message: 'Booking not found' });
+    if (!req.user) {
+      res.status(401).json({ message: 'Authentication is required' });
       return;
     }
 
-    if (req.user?.role !== 'admin' && booking.userId.toString() !== req.user?.userId) {
-      res.status(403).json({ message: 'You do not have permission to view this booking' });
-      return;
-    }
+    const bookings = await Booking.find({
+      userId: new Types.ObjectId(req.user.userId)
+    }).sort({ createdAt: -1 });
 
-    res.json(booking);
+    res.json(bookings);
   } catch (error) {
     next(error);
   }
 });
 
-router.delete('/:id', authMiddleware, roleMiddleware('admin'), async (req, res, next) => {
+router.get('/', authMiddleware, roleMiddleware('admin'), async (_req, res, next) => {
   try {
-    const booking = await Booking.findByIdAndDelete(req.params.id);
+    const bookings = await Booking.find().sort({ createdAt: -1 });
+
+    res.json(bookings);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/:id/cancel', authMiddleware, async (req: AuthRequest, res, next) => {
+  try {
+    const bookingId = getParamId(req.params.id);
+
+    if (!req.user) {
+      res.status(401).json({ message: 'Authentication is required' });
+      return;
+    }
+
+    if (!bookingId || !Types.ObjectId.isValid(bookingId)) {
+      res.status(400).json({ message: 'Invalid booking id' });
+      return;
+    }
+
+    const booking = await Booking.findById(bookingId);
 
     if (!booking) {
       res.status(404).json({ message: 'Booking not found' });
       return;
     }
 
-    res.json({ success: true });
+    if (req.user.role !== 'admin' && booking.userId.toString() !== req.user.userId) {
+      res.status(403).json({ message: 'You do not have permission to cancel this booking' });
+      return;
+    }
+
+    if (booking.status === 'cancelled') {
+      res.status(400).json({ message: 'Booking is already cancelled' });
+      return;
+    }
+
+    const event = await Event.findById(booking.eventId);
+
+    booking.status = 'cancelled';
+    await booking.save();
+
+    if (event) {
+      event.availableSeats += 1;
+      await event.save();
+    }
+
+    res.json(booking);
   } catch (error) {
     next(error);
   }
