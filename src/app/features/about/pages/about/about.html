@@ -1,0 +1,100 @@
+<section class="about-page">
+  <section class="about-hero">
+    <span class="badge">About Evently</span>
+    <h1>Evently is a modern event booking dashboard for people who move fast.</h1>
+    <p>
+      It brings event discovery, seat booking, and admin management into a polished workspace
+      designed for communities, teams, venues, and organizers.
+    </p>
+  </section>
+
+  <section class="story-grid">
+    <article class="story-card story-card--featured">
+      <span class="badge">Mission</span>
+      <h2>Make great events easier to find, book, and manage.</h2>
+      <p>
+        Evently focuses on the core flow that matters: help attendees choose the right experience
+        and give organizers a clear way to keep event availability accurate.
+      </p>
+    </article>
+
+    <article class="story-card">
+      <span class="badge">Why it exists</span>
+      <h2>Event operations should feel simple.</h2>
+      <p>
+        Booking experiences often get split between listings, spreadsheets, messages, and manual
+        checks. Evently exists to bring that work into one dependable product interface.
+      </p>
+    </article>
+  </section>
+
+  <section class="capability-section">
+    <div class="section-heading">
+      <span class="badge">For attendees</span>
+      <h2>What users can do</h2>
+    </div>
+
+    <div class="cards-grid">
+      @for (item of userActions; track item.title) {
+        <article class="capability-card">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="capability-section">
+    <div class="section-heading">
+      <span class="badge">For operators</span>
+      <h2>What admins can manage</h2>
+    </div>
+
+    <div class="cards-grid">
+      @for (item of adminActions; track item.title) {
+        <article class="capability-card">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="company-section">
+    <div>
+      <span class="badge">Company style</span>
+      <h2>Built like a focused product team, not a ticketing maze.</h2>
+      <p>
+        Evently is shaped around calm workflows, high-contrast data, and responsive interfaces that
+        feel at home in a production SaaS dashboard.
+      </p>
+    </div>
+
+    <div class="company-panel">
+      <div>
+        <strong>Product</strong>
+        <span>Simple booking flows</span>
+      </div>
+      <div>
+        <strong>Design</strong>
+        <span>Dark SaaS interface</span>
+      </div>
+      <div>
+        <strong>Platform</strong>
+        <span>Role-aware dashboard</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-card">
+    <div>
+      <span class="badge">Start exploring</span>
+      <h2>Find your next event or create an account to manage bookings.</h2>
+    </div>
+
+    <div class="cta-card__actions">
+      <a class="btn btn-primary" routerLink="/events">Browse Events</a>
+      <a class="btn btn-secondary" routerLink="/register">Create Account</a>
+    </div>
+  </section>
+</section>
