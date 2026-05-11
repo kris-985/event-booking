@@ -7,7 +7,11 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'events'
+    redirectTo: 'home'
+  },
+  {
+    path: 'home',
+    loadComponent: () => import('./features/home/pages/home/home').then((m) => m.Home)
   },
   {
     path: 'events',

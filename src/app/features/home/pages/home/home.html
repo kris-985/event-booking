@@ -1,0 +1,102 @@
+<section class="home">
+  <section class="hero">
+    <div class="hero__content">
+      <span class="badge">Event booking dashboard</span>
+      <h1>Discover and book standout events in one modern workspace.</h1>
+      <p>
+        Evently helps you browse curated events, reserve seats, and manage bookings with a
+        fast dashboard built for busy teams and active communities.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn-primary" routerLink="/events">Browse Events</a>
+        <a class="btn btn-secondary" routerLink="/register">Create Account</a>
+      </div>
+    </div>
+
+    <aside class="preview-card" aria-label="Featured event preview">
+      <div class="preview-card__image"></div>
+      <div class="preview-card__body">
+        <span class="badge">Featured</span>
+        <h2>Product Leaders Summit</h2>
+        <p>Sofia Tech Park · Jun 24</p>
+        <div class="preview-card__footer">
+          <span>$79</span>
+          <span>128 seats</span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="stats" aria-label="Platform stats">
+    @for (stat of stats; track stat.label) {
+      <article class="stat-card">
+        <strong>{{ stat.value }}</strong>
+        <span>{{ stat.label }}</span>
+      </article>
+    }
+  </section>
+
+  <section class="section-block" id="about">
+    <div class="section-heading">
+      <span class="badge">Categories</span>
+      <h2>Featured categories</h2>
+    </div>
+
+    <div class="category-grid">
+      @for (category of categories; track category) {
+        <article class="category-card">{{ category }}</article>
+      }
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <span class="badge">Workflow</span>
+      <h2>How it works</h2>
+    </div>
+
+    <div class="steps-grid">
+      @for (step of steps; track step.title; let index = $index) {
+        <article class="step-card">
+          <span>{{ index + 1 }}</span>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="section-block" id="contact">
+    <div class="section-heading section-heading--inline">
+      <div>
+        <span class="badge">Live catalog</span>
+        <h2>Featured events</h2>
+      </div>
+      <a class="btn btn-secondary" routerLink="/events">View all</a>
+    </div>
+
+    @if (isLoadingEvents) {
+      <div class="events-placeholder card">Loading featured events...</div>
+    } @else if (featuredEvents.length > 0) {
+      <div class="featured-grid">
+        @for (event of featuredEvents; track event.id) {
+          <article class="featured-card">
+            <img [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
+            <div>
+              <span class="badge">{{ event.category }}</span>
+              <h3>{{ event.title }}</h3>
+              <p>{{ event.location }} · {{ event.date | date: 'mediumDate' }}</p>
+              <footer>
+                <span>{{ event.price | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+                <a routerLink="/events/{{ event.id }}">Details</a>
+              </footer>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="events-placeholder card">Featured events will appear here once events are added.</div>
+    }
+  </section>
+</section>

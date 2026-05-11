@@ -1,5 +1,5 @@
 <nav class="navbar" aria-label="Main navigation">
-  <a class="navbar__brand" routerLink="/" (click)="closeMenu()">
+  <a class="navbar__brand" routerLink="/home" (click)="closeMenu()">
     <span class="navbar__mark">E</span>
     <span>Evently</span>
   </a>
@@ -19,7 +19,7 @@
   <div class="navbar__menu" [class.navbar__menu--open]="isMenuOpen">
     <div class="navbar__links">
       <a
-        routerLink="/"
+        routerLink="/home"
         routerLinkActive="navbar__link--active"
         [routerLinkActiveOptions]="{ exact: true }"
         (click)="closeMenu()"
