@@ -1,19 +1,90 @@
 <section class="page">
-  <header>
-    <p class="eyebrow">Events</p>
-    <h1>Browse upcoming events</h1>
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Events</p>
+      <h1>Browse upcoming events</h1>
+    </div>
   </header>
 
-  <div class="events-grid">
-    @for (event of events; track event.id) {
-      <article class="event-card">
-        <div>
-          <h2>{{ event.title }}</h2>
-          <p>{{ event.date }} · {{ event.location }}</p>
-        </div>
+  <div class="filters" aria-label="Event filters">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        type="search"
+        name="search"
+        [(ngModel)]="searchTerm"
+        placeholder="Title, location, or category"
+      />
+    </mat-form-field>
 
-        <a [routerLink]="['/events', event.id]">View details</a>
-      </article>
-    }
+    <mat-form-field appearance="outline">
+      <mat-label>Category</mat-label>
+      <mat-select name="category" [(ngModel)]="selectedCategory">
+        <mat-option value="all">All categories</mat-option>
+        @for (category of categories; track category) {
+          <mat-option [value]="category">{{ category }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </div>
+
+  @if (isLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+  } @else if (errorMessage) {
+    <mat-card class="state-card">
+      <mat-card-title>Events unavailable</mat-card-title>
+      <mat-card-content>{{ errorMessage }}</mat-card-content>
+      <mat-card-actions>
+        <button matButton="filled" type="button" (click)="loadEvents()">Retry</button>
+      </mat-card-actions>
+    </mat-card>
+  } @else if (filteredEvents.length > 0) {
+    <div class="events-grid">
+      @for (event of filteredEvents; track event.id) {
+        <mat-card class="event-card" appearance="outlined">
+          <img mat-card-image [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
+
+          <mat-card-header>
+            <mat-chip-set aria-label="Event category">
+              <mat-chip>{{ event.category }}</mat-chip>
+            </mat-chip-set>
+            <mat-card-title>{{ event.title }}</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <dl class="event-meta">
+              <div>
+                <dt>Location</dt>
+                <dd>{{ event.location }}</dd>
+              </div>
+              <div>
+                <dt>Date</dt>
+                <dd>{{ event.date | date: 'mediumDate' }}</dd>
+              </div>
+              <div>
+                <dt>Price</dt>
+                <dd>{{ event.price | currency: 'USD' : 'symbol' : '1.0-0' }}</dd>
+              </div>
+              <div>
+                <dt>Available seats</dt>
+                <dd>{{ event.availableSeats }}</dd>
+              </div>
+            </dl>
+          </mat-card-content>
+
+          <mat-card-actions align="end">
+            <a matButton="filled" [routerLink]="['/events', event.id]">View Details</a>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <mat-card class="state-card">
+      <mat-card-title>No events found</mat-card-title>
+      <mat-card-content>Try a different search term or category.</mat-card-content>
+    </mat-card>
+  }
 </section>

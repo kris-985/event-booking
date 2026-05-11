@@ -7,56 +7,44 @@
 [32m√[39m Building...
 [35mBrowser bundles[39m     
 [1mInitial chunk files[22m [2m | [22m[1mNames[22m           [2m | [22m [1mRaw size[22m
-[32mmain.js[39m             [2m | [22m[2mmain[22m            [2m | [22m [36m57.88 kB[39m[2m | [22m
+[32mmain.js[39m             [2m | [22m[2mmain[22m            [2m | [22m [36m58.10 kB[39m[2m | [22m
+[32mstyles.css[39m          [2m | [22m[2mstyles[22m          [2m | [22m  [36m7.78 kB[39m[2m | [22m
 [32mchunk-YQOESBWP.js[39m   [2m | [22m[2m-[22m               [2m | [22m[36m754 bytes[39m[2m | [22m
-[32mstyles.css[39m          [2m | [22m[2mstyles[22m          [2m | [22m [36m96 bytes[39m[2m | [22m
 
-[1m [22m                   [2m | [22m[1mInitial total[22m   [2m | [22m [1m58.73 kB[22m
+[1m [22m                   [2m | [22m[1mInitial total[22m   [2m | [22m [1m66.64 kB[22m
 
 [1mLazy chunk files[22m    [2m | [22m[1mNames[22m           [2m | [22m [1mRaw size[22m
-[32mchunk-UW2RFCCI.js[39m   [2m | [22m[2mevents-list[22m     [2m | [22m  [36m6.10 kB[39m[2m | [22m
-[32mchunk-IQ2K2RJK.js[39m   [2m | [22m[2mevent-details[22m   [2m | [22m  [36m4.43 kB[39m[2m | [22m
+[32mchunk-J3KSSLJK.js[39m   [2m | [22m[2mevents-list[22m     [2m | [22m [36m21.21 kB[39m[2m | [22m
+[32mchunk-WZ3EGJQZ.js[39m   [2m | [22m[2mevent-details[22m   [2m | [22m [36m13.76 kB[39m[2m | [22m
 [32mchunk-P74DASQ6.js[39m   [2m | [22m[2mregister[22m        [2m | [22m  [36m2.99 kB[39m[2m | [22m
 [32mchunk-RA6DCDH4.js[39m   [2m | [22m[2mlogin[22m           [2m | [22m  [36m2.90 kB[39m[2m | [22m
 [32mchunk-Z5B4SAA2.js[39m   [2m | [22m[2madmin-dashboard[22m [2m | [22m  [36m2.89 kB[39m[2m | [22m
 [32mchunk-JUIT2PB6.js[39m   [2m | [22m[2mmy-bookings[22m     [2m | [22m  [36m2.82 kB[39m[2m | [22m
 [32mchunk-4P3BZPXB.js[39m   [2m | [22m[2mprofile[22m         [2m | [22m  [36m2.73 kB[39m[2m | [22m
+[32mchunk-D56ABOGE.js[39m   [2m | [22m[2m-[22m               [2m | [22m  [36m2.48 kB[39m[2m | [22m
 
 
 [35mServer bundles[39m      
 [1mInitial chunk files[22m [2m | [22m[1mNames[22m           [2m | [22m [1mRaw size[22m
 [32mserver.mjs[39m          [2m | [22m[2mserver[22m          [2m | [22m [36m48.47 kB[39m[2m | [22m
-[32mmain.server.mjs[39m     [2m | [22m[2mmain.server[22m     [2m | [22m [36m12.56 kB[39m[2m | [22m
+[32mmain.server.mjs[39m     [2m | [22m[2mmain.server[22m     [2m | [22m [36m12.78 kB[39m[2m | [22m
 [32mchunk-FFILDKJJ.mjs[39m  [2m | [22m[2m-[22m               [2m | [22m[36m788 bytes[39m[2m | [22m
 [32mpolyfills.server.mjs[39m[2m | [22m[2mpolyfills.server[22m[2m | [22m[36m268 bytes[39m[2m | [22m
 
 [1mLazy chunk files[22m    [2m | [22m[1mNames[22m           [2m | [22m [1mRaw size[22m
-[32mchunk-REYCPJLE.mjs[39m  [2m | [22m[2mevents-list[22m     [2m | [22m  [36m6.13 kB[39m[2m | [22m
-[32mchunk-6LZA2NCD.mjs[39m  [2m | [22m[2mevent-details[22m   [2m | [22m  [36m4.47 kB[39m[2m | [22m
+[32mchunk-P7LB53TL.mjs[39m  [2m | [22m[2mevents-list[22m     [2m | [22m [36m21.25 kB[39m[2m | [22m
+[32mchunk-YWQZILX4.mjs[39m  [2m | [22m[2mevent-details[22m   [2m | [22m [36m13.79 kB[39m[2m | [22m
 [32mchunk-Q6HLXBHW.mjs[39m  [2m | [22m[2mregister[22m        [2m | [22m  [36m3.02 kB[39m[2m | [22m
 [32mchunk-PUXLZYTI.mjs[39m  [2m | [22m[2mlogin[22m           [2m | [22m  [36m2.94 kB[39m[2m | [22m
 [32mchunk-66OY2EQN.mjs[39m  [2m | [22m[2madmin-dashboard[22m [2m | [22m  [36m2.92 kB[39m[2m | [22m
 [32mchunk-T3IWSKJH.mjs[39m  [2m | [22m[2mmy-bookings[22m     [2m | [22m  [36m2.85 kB[39m[2m | [22m
 [32mchunk-XOW65TPU.mjs[39m  [2m | [22m[2mprofile[22m         [2m | [22m  [36m2.76 kB[39m[2m | [22m
+[32mchunk-WWL24S5E.mjs[39m  [2m | [22m[2m-[22m               [2m | [22m  [36m2.51 kB[39m[2m | [22m
 
-Application bundle generation complete. [1.631 seconds] - 2026-05-09T22:41:57.999Z
+Application bundle generation complete. [1.738 seconds] - 2026-05-11T22:16:31.393Z
 
 Watch mode enabled. Watching for file changes...
 NOTE: Raw file sizes do not reflect development server per-request transformations.
-[2m01:41:58 ч.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m Re-optimizing dependencies because lockfile has changed
-[2m01:41:58 ч.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because lockfile has changed
+[2m01:16:31 ч.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m Re-optimizing dependencies because lockfile has changed
+[2m01:16:31 ч.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because lockfile has changed
   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m
-[33m>[39m Changes detected. Rebuilding...
-[32m√[39m Changes detected. Rebuilding...
-[35mBrowser bundles[39m    
-[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
-[32mmain.js[39m            [2m | [22m[2mmain[22m  [2m | [22m[36m11.22 kB[39m[2m | [22m
-
-
-[35mServer bundles[39m     
-[1mInitial chunk files[22m[2m | [22m[1mNames[22m [2m | [22m[1mRaw size[22m
-[32mserver.mjs[39m         [2m | [22m[2mserver[22m[2m | [22m [36m1.84 kB[39m[2m | [22m
-
-Application bundle generation complete. [0.282 seconds] - 2026-05-09T22:47:13.247Z
-
-Page reload sent to client(s).

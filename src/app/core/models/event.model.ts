@@ -5,7 +5,7 @@ export interface Event {
   location: string;
   date: string;
   price: number;
-  capacity: number;
+  availableSeats: number;
   imageUrl: string;
   category: string;
 }

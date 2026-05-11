@@ -1,12 +1,57 @@
 <section class="page">
-  <a class="back-link" routerLink="/events">Back to events</a>
+  <a matButton routerLink="/events">Back to events</a>
 
-  <article class="details">
-    <p class="eyebrow">Event details</p>
-    <h1>Event #{{ eventId }}</h1>
-    <p>
-      This page is ready for event details once data services are added. Backend integration has not
-      been added yet.
-    </p>
-  </article>
+  @if (isLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="42"></mat-spinner>
+    </div>
+  } @else if (errorMessage) {
+    <mat-card class="state-card">
+      <mat-card-title>Event unavailable</mat-card-title>
+      <mat-card-content>{{ errorMessage }}</mat-card-content>
+    </mat-card>
+  } @else if (event; as event) {
+    <mat-card class="details" appearance="outlined">
+      <img mat-card-image [src]="event.imageUrl" [alt]="event.title" />
+
+      <mat-card-header>
+        <mat-chip-set aria-label="Event category">
+          <mat-chip>{{ event.category }}</mat-chip>
+        </mat-chip-set>
+        <mat-card-title>{{ event.title }}</mat-card-title>
+        <mat-card-subtitle>{{ event.location }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>{{ event.description }}</p>
+
+        <dl class="event-meta">
+          <div>
+            <dt>Date</dt>
+            <dd>{{ event.date | date: 'fullDate' }}</dd>
+          </div>
+          <div>
+            <dt>Price</dt>
+            <dd>{{ event.price | currency: 'USD' : 'symbol' : '1.0-0' }}</dd>
+          </div>
+          <div>
+            <dt>Available seats</dt>
+            <dd>{{ event.availableSeats }}</dd>
+          </div>
+        </dl>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button matButton="filled" type="button">Book Event</button>
+      </mat-card-actions>
+    </mat-card>
+  } @else {
+    <mat-card class="state-card">
+      <mat-card-title>Event not found</mat-card-title>
+      <mat-card-content>The event may have been removed or the link may be incorrect.</mat-card-content>
+      <mat-card-actions>
+        <a matButton="filled" routerLink="/events">Browse events</a>
+      </mat-card-actions>
+    </mat-card>
+  }
 </section>
