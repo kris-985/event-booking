@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 
@@ -32,17 +32,13 @@ export class EventsService {
 
   createEvent(payload: Omit<Event, 'id'>): Observable<Event> {
     return this.http
-      .post<ApiEvent>(this.eventsUrl, payload, {
-        headers: this.getAuthHeaders()
-      })
+      .post<ApiEvent>(this.eventsUrl, payload)
       .pipe(map((event) => this.toEvent(event)));
   }
 
   updateEvent(id: string, payload: Partial<Event>): Observable<Event | undefined> {
     return this.http
-      .put<ApiEvent>(`${this.eventsUrl}/${id}`, payload, {
-        headers: this.getAuthHeaders()
-      })
+      .put<ApiEvent>(`${this.eventsUrl}/${id}`, payload)
       .pipe(
         map((event) => this.toEvent(event)),
         catchError(() => of(undefined))
@@ -51,9 +47,7 @@ export class EventsService {
 
   deleteEvent(id: string): Observable<boolean> {
     return this.http
-      .delete<{ message: string }>(`${this.eventsUrl}/${id}`, {
-        headers: this.getAuthHeaders()
-      })
+      .delete<{ message: string }>(`${this.eventsUrl}/${id}`)
       .pipe(
         map(() => true),
         catchError(() => of(false))
@@ -74,13 +68,4 @@ export class EventsService {
     };
   }
 
-  private getAuthHeaders(): HttpHeaders {
-    if (typeof localStorage === 'undefined') {
-      return new HttpHeaders();
-    }
-
-    const token = localStorage.getItem('token');
-
-    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
-  }
 }
