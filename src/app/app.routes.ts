@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
 
+import { adminGuard } from './core/guards/admin.guard';
+import { authGuard } from './core/guards/auth.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -26,15 +29,18 @@ export const routes: Routes = [
   },
   {
     path: 'my-bookings',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/bookings/pages/my-bookings/my-bookings').then((m) => m.MyBookings)
   },
   {
     path: 'profile',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/profile/pages/profile/profile').then((m) => m.Profile)
   },
   {
     path: 'admin',
+    canActivate: [authGuard, adminGuard],
     loadComponent: () =>
       import('./features/admin/pages/admin-dashboard/admin-dashboard').then(
         (m) => m.AdminDashboard
