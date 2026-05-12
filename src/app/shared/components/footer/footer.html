@@ -1,0 +1,38 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <section class="footer__brand">
+      <a class="footer__logo" routerLink="/home">
+        <span>E</span>
+        Evently
+      </a>
+      <p>
+        Discover, book, and manage events from a polished dashboard built for modern teams,
+        communities, and venues.
+      </p>
+    </section>
+
+    <nav class="footer__column" aria-label="Quick links">
+      <h2>Quick links</h2>
+      <a routerLink="/home">Home</a>
+      <a routerLink="/events">Events</a>
+      <a routerLink="/about">About</a>
+      <a routerLink="/contact">Contact</a>
+    </nav>
+
+    <nav class="footer__column" aria-label="Account links">
+      <h2>Account</h2>
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+      <a routerLink="/my-bookings">My Bookings</a>
+    </nav>
+
+    <nav class="footer__column" aria-label="Admin links">
+      <h2>Admin</h2>
+      <a routerLink="/admin">Admin Dashboard</a>
+    </nav>
+  </div>
+
+  <div class="footer__bottom">
+    <p>&copy; {{ currentYear }} Evently. All rights reserved.</p>
+  </div>
+</footer>
