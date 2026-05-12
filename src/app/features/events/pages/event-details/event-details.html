@@ -1,9 +1,10 @@
 <section class="page">
-  <a matButton routerLink="/events">Back to events</a>
+  <a class="back-link" routerLink="/events">Back to events</a>
 
   @if (isLoading) {
     <div class="loading-state">
       <mat-spinner diameter="42"></mat-spinner>
+      <p>Loading event details...</p>
     </div>
   } @else if (errorMessage) {
     <mat-card class="state-card">
@@ -11,40 +12,107 @@
       <mat-card-content>{{ errorMessage }}</mat-card-content>
     </mat-card>
   } @else if (event; as event) {
-    <mat-card class="details" appearance="outlined">
-      <img mat-card-image [src]="event.imageUrl" [alt]="event.title" />
+    <article class="details">
+      <section class="details-hero">
+        <img [src]="event.imageUrl" [alt]="event.title" />
 
-      <mat-card-header>
-        <mat-chip-set aria-label="Event category">
-          <mat-chip>{{ event.category }}</mat-chip>
-        </mat-chip-set>
-        <mat-card-title>{{ event.title }}</mat-card-title>
-        <mat-card-subtitle>{{ event.location }}</mat-card-subtitle>
-      </mat-card-header>
+        <div class="details-hero__content">
+          <span class="category-badge">{{ event.category }}</span>
+          <h1>{{ event.title }}</h1>
+          <p>{{ event.description }}</p>
+        </div>
+      </section>
 
-      <mat-card-content>
-        <p>{{ event.description }}</p>
+      <section class="details-grid">
+        <div class="main-content">
+          <section class="info-section">
+            <span class="section-label">Overview</span>
+            <h2>About this event</h2>
+            <p>{{ event.description }}</p>
+          </section>
 
-        <dl class="event-meta">
-          <div>
-            <dt>Date</dt>
-            <dd>{{ event.date | date: 'fullDate' }}</dd>
+          <section class="info-section">
+            <span class="section-label">Best for</span>
+            <h2>Who should attend</h2>
+            <p>{{ getAudience(event) }}</p>
+          </section>
+
+          <section class="info-section">
+            <span class="section-label">What to expect</span>
+            <h2>Event highlights</h2>
+            <div class="feature-grid">
+              @for (highlight of getHighlights(event); track highlight) {
+                <article>
+                  <strong>{{ highlight }}</strong>
+                  <span>Part of the curated {{ event.category }} experience in {{ event.location }}.</span>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section class="info-section">
+            <span class="section-label">Program</span>
+            <h2>Sample schedule</h2>
+            <div class="agenda-list">
+              @for (item of getAgenda(event); track item; let index = $index) {
+                <article>
+                  <span>{{ index + 1 }}</span>
+                  <strong>{{ item }}</strong>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section class="info-section">
+            <span class="section-label">Practical info</span>
+            <h2>Before you go</h2>
+            <div class="feature-grid">
+              <article>
+                <strong>Location</strong>
+                <span>{{ event.location }}</span>
+              </article>
+              <article>
+                <strong>Date</strong>
+                <span>The event is planned for {{ event.date | date: 'fullDate' }}.</span>
+              </article>
+              <article>
+                <strong>Capacity</strong>
+                <span>{{ event.availableSeats }} seats are currently available.</span>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <aside class="booking-panel">
+          <div class="price-row">
+            <span>Price</span>
+            <strong>{{ event.price | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
           </div>
-          <div>
-            <dt>Price</dt>
-            <dd>{{ event.price | currency: 'USD' : 'symbol' : '1.0-0' }}</dd>
-          </div>
-          <div>
-            <dt>Available seats</dt>
-            <dd>{{ event.availableSeats }}</dd>
-          </div>
-        </dl>
-      </mat-card-content>
 
-      <mat-card-actions align="end">
-        <button matButton="filled" type="button">Book Event</button>
-      </mat-card-actions>
-    </mat-card>
+          <dl class="event-meta">
+            <div>
+              <dt>Date</dt>
+              <dd>{{ event.date | date: 'fullDate' }}</dd>
+            </div>
+            <div>
+              <dt>Location</dt>
+              <dd>{{ event.location }}</dd>
+            </div>
+            <div>
+              <dt>Category</dt>
+              <dd>{{ event.category }}</dd>
+            </div>
+            <div>
+              <dt>Available seats</dt>
+              <dd>{{ event.availableSeats }}</dd>
+            </div>
+          </dl>
+
+          <button matButton="filled" type="button">Book Event</button>
+          <p class="booking-note">Booking logic is coming next. This page is connected to live event data.</p>
+        </aside>
+      </section>
+    </article>
   } @else {
     <mat-card class="state-card">
       <mat-card-title>Event not found</mat-card-title>

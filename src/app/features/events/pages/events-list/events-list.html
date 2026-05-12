@@ -53,7 +53,10 @@
           <img mat-card-image [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
 
           <mat-card-header>
-            <span class="category-badge">{{ event.category }}</span>
+            <div class="card-topline">
+              <span class="category-badge">{{ event.category }}</span>
+              <span class="seat-pill">{{ event.availableSeats }} seats</span>
+            </div>
             <mat-card-title>{{ event.title }}</mat-card-title>
           </mat-card-header>
 
