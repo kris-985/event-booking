@@ -44,22 +44,29 @@
     </div>
 
     <div class="navbar__actions">
-      <a
-        class="navbar__button navbar__button--secondary"
-        routerLink="/login"
-        routerLinkActive="navbar__button--active"
-        (click)="closeMenu()"
-      >
-        Login
-      </a>
-      <a
-        class="navbar__button navbar__button--primary"
-        routerLink="/register"
-        routerLinkActive="navbar__button--active"
-        (click)="closeMenu()"
-      >
-        Register
-      </a>
+      @if (authService.currentUser(); as user) {
+        <span class="navbar__user">Hi, {{ user.name }}</span>
+        <button class="navbar__button navbar__button--secondary" type="button" (click)="logout()">
+          Logout
+        </button>
+      } @else {
+        <a
+          class="navbar__button navbar__button--secondary"
+          routerLink="/login"
+          routerLinkActive="navbar__button--active"
+          (click)="closeMenu()"
+        >
+          Login
+        </a>
+        <a
+          class="navbar__button navbar__button--primary"
+          routerLink="/register"
+          routerLinkActive="navbar__button--active"
+          (click)="closeMenu()"
+        >
+          Register
+        </a>
+      }
     </div>
   </div>
 </nav>

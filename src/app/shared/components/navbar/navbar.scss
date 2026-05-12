@@ -87,6 +87,7 @@
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .navbar__button--secondary {
@@ -103,6 +104,20 @@
 
 .navbar__button--active {
   outline: 2px solid rgba(34, 211, 238, 0.24);
+}
+
+.navbar__user {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 9px 12px;
+  color: var(--color-text);
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 750;
+  white-space: nowrap;
 }
 
 .navbar__toggle {
@@ -158,7 +173,8 @@
   }
 
   .navbar__links a,
-  .navbar__button {
+  .navbar__button,
+  .navbar__user {
     justify-content: center;
     width: 100%;
   }
