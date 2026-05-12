@@ -1,6 +1,61 @@
 <section class="auth-page">
-  <div class="panel">
-    <h1>Login</h1>
-    <p>Authentication UI placeholder. No backend has been added yet.</p>
+  <aside class="auth-panel">
+    <span class="badge">Welcome back</span>
+    <h1>Sign in to manage your event bookings.</h1>
+    <p>
+      Access saved reservations, continue booking seats, and jump back into the Evently dashboard.
+    </p>
+
+    <div class="auth-panel__stats">
+      <div>
+        <strong>500+</strong>
+        <span>live events</span>
+      </div>
+      <div>
+        <strong>30+</strong>
+        <span>cities</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="login-card">
+    <div class="login-card__header">
+      <span class="badge">Login</span>
+      <h2>Enter your account</h2>
+      <p>Use your email and password to continue.</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
+      <label>
+        <span>Email</span>
+        <input class="input" type="email" formControlName="email" placeholder="you@example.com" />
+        @if (hasError('email', 'required')) {
+          <small>Email is required.</small>
+        } @else if (hasError('email', 'email')) {
+          <small>Enter a valid email address.</small>
+        }
+      </label>
+
+      <label>
+        <span>Password</span>
+        <input class="input" type="password" formControlName="password" placeholder="Password" />
+        @if (hasError('password', 'required')) {
+          <small>Password is required.</small>
+        }
+      </label>
+
+      @if (errorMessage) {
+        <p class="error-message">{{ errorMessage }}</p>
+      }
+
+      <button class="btn btn-primary" type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <p class="register-link">
+      New to Evently?
+      <a routerLink="/register">Create an account</a>
+    </p>
   </div>
 </section>
