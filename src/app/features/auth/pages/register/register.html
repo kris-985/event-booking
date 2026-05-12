@@ -1,6 +1,81 @@
 <section class="auth-page">
-  <div class="panel">
-    <h1>Register</h1>
-    <p>Registration UI placeholder. No backend has been added yet.</p>
+  <div class="register-card">
+    <div class="register-card__header">
+      <span class="badge">Create account</span>
+      <h1>Start booking better events.</h1>
+      <p>Join Evently to reserve seats, track bookings, and discover curated experiences.</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="submit()" novalidate>
+      <label>
+        <span>Name</span>
+        <input class="input" type="text" formControlName="name" placeholder="Your name" />
+        @if (hasError('name', 'required')) {
+          <small>Name is required.</small>
+        }
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input class="input" type="email" formControlName="email" placeholder="you@example.com" />
+        @if (hasError('email', 'required')) {
+          <small>Email is required.</small>
+        } @else if (hasError('email', 'email')) {
+          <small>Enter a valid email address.</small>
+        }
+      </label>
+
+      <label>
+        <span>Password</span>
+        <input class="input" type="password" formControlName="password" placeholder="At least 6 characters" />
+        @if (hasError('password', 'required')) {
+          <small>Password is required.</small>
+        } @else if (hasError('password', 'minlength')) {
+          <small>Password must be at least 6 characters.</small>
+        }
+      </label>
+
+      <label>
+        <span>Confirm password</span>
+        <input class="input" type="password" formControlName="confirmPassword" placeholder="Repeat password" />
+        @if (hasError('confirmPassword', 'required')) {
+          <small>Please confirm your password.</small>
+        } @else if (hasPasswordMismatch()) {
+          <small>Passwords do not match.</small>
+        }
+      </label>
+
+      @if (errorMessage) {
+        <p class="error-message">{{ errorMessage }}</p>
+      }
+
+      <button class="btn btn-primary" type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Creating account...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <p class="login-link">
+      Already have an account?
+      <a routerLink="/login">Sign in</a>
+    </p>
   </div>
+
+  <aside class="benefits-panel">
+    <span class="badge">Why Evently</span>
+    <h2>A production-grade event dashboard experience.</h2>
+    <div class="benefits-list">
+      <article>
+        <strong>Curated discovery</strong>
+        <span>Find technology, music, business, sports, and art events quickly.</span>
+      </article>
+      <article>
+        <strong>Simple booking flow</strong>
+        <span>Reserve seats and keep upcoming plans in one focused dashboard.</span>
+      </article>
+      <article>
+        <strong>Admin-ready foundation</strong>
+        <span>Designed to support event management and booking oversight.</span>
+      </article>
+    </div>
+  </aside>
 </section>
