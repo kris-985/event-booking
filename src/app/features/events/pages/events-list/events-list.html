@@ -1,8 +1,12 @@
 <section class="page">
   <header class="page-header">
     <div>
-      <p class="eyebrow">Events</p>
+      <span class="badge">Event catalog</span>
       <h1>Browse upcoming events</h1>
+      <p>
+        Search curated experiences by title, city, or category, then reserve your seat from the
+        event details page.
+      </p>
     </div>
   </header>
 
@@ -32,6 +36,7 @@
   @if (isLoading) {
     <div class="loading-state">
       <mat-spinner diameter="42"></mat-spinner>
+      <p>Loading events...</p>
     </div>
   } @else if (errorMessage) {
     <mat-card class="state-card">
@@ -48,13 +53,13 @@
           <img mat-card-image [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
 
           <mat-card-header>
-            <mat-chip-set aria-label="Event category">
-              <mat-chip>{{ event.category }}</mat-chip>
-            </mat-chip-set>
+            <span class="category-badge">{{ event.category }}</span>
             <mat-card-title>{{ event.title }}</mat-card-title>
           </mat-card-header>
 
           <mat-card-content>
+            <p class="event-description">{{ event.description }}</p>
+
             <dl class="event-meta">
               <div>
                 <dt>Location</dt>
@@ -76,7 +81,9 @@
           </mat-card-content>
 
           <mat-card-actions align="end">
-            <a matButton="filled" [routerLink]="['/events', event.id]">View Details</a>
+            <a class="details-button" matButton="filled" [routerLink]="['/events', event.id]">
+              View Details
+            </a>
           </mat-card-actions>
         </mat-card>
       }
@@ -84,7 +91,9 @@
   } @else {
     <mat-card class="state-card">
       <mat-card-title>No events found</mat-card-title>
-      <mat-card-content>Try a different search term or category.</mat-card-content>
+      <mat-card-content>
+        Try a different search term or category, or clear your filters to see every event.
+      </mat-card-content>
     </mat-card>
   }
 </section>
