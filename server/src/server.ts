@@ -11,11 +11,22 @@ dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
-const clientUrl = process.env.CLIENT_URL || 'http://localhost:4200';
+const allowedClientOrigins = new Set([
+  process.env.CLIENT_URL || 'http://localhost:4200',
+  'http://localhost:4200',
+  'http://127.0.0.1:4200'
+]);
 
 app.use(
   cors({
-    origin: clientUrl,
+    origin: (origin, callback) => {
+      if (!origin || allowedClientOrigins.has(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`Origin ${origin} is not allowed by CORS`));
+    },
     credentials: true
   })
 );
