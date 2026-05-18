@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -27,10 +27,10 @@ import { EventsService } from '../../../../core/services/events.service';
     MatInputModule,
     MatProgressSpinnerModule,
     MatSelectModule,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './events-list.html',
-  styleUrl: './events-list.scss'
+  styleUrl: './events-list.scss',
 })
 export class EventsList implements OnInit {
   protected events: Event[] = [];
@@ -39,6 +39,7 @@ export class EventsList implements OnInit {
   protected searchTerm = '';
   protected selectedCategory = 'all';
 
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly eventsService = inject(EventsService);
 
   ngOnInit(): void {
@@ -73,11 +74,13 @@ export class EventsList implements OnInit {
       next: (events) => {
         this.events = events;
         this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
       },
       error: () => {
         this.errorMessage = 'Unable to load events. Please try again.';
         this.isLoading = false;
-      }
+        this.changeDetectorRef.markForCheck();
+      },
     });
   }
 }
