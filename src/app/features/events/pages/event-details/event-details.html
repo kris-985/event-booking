@@ -44,7 +44,10 @@
               @for (highlight of getHighlights(event); track highlight) {
                 <article>
                   <strong>{{ highlight }}</strong>
-                  <span>Part of the curated {{ event.category }} experience in {{ event.location }}.</span>
+                  <span
+                    >Part of the curated {{ event.category }} experience in
+                    {{ event.location }}.</span
+                  >
                 </article>
               }
             </div>
@@ -108,15 +111,39 @@
             </div>
           </dl>
 
-          <button matButton="filled" type="button">Book Event</button>
-          <p class="booking-note">Booking logic is coming next. This page is connected to live event data.</p>
+          <button
+            matButton="filled"
+            type="button"
+            [disabled]="isBooking || event.availableSeats <= 0"
+            (click)="bookEvent(event)"
+          >
+            @if (isBooking) {
+              Booking...
+            } @else if (event.availableSeats <= 0) {
+              Sold Out
+            } @else {
+              Book Event
+            }
+          </button>
+
+          @if (bookingMessage) {
+            <p class="booking-message">{{ bookingMessage }}</p>
+          } @else if (bookingError) {
+            <p class="booking-error">{{ bookingError }}</p>
+          } @else {
+            <p class="booking-note">
+              Book one ticket for this event and manage it from My Bookings.
+            </p>
+          }
         </aside>
       </section>
     </article>
   } @else {
     <mat-card class="state-card">
       <mat-card-title>Event not found</mat-card-title>
-      <mat-card-content>The event may have been removed or the link may be incorrect.</mat-card-content>
+      <mat-card-content
+        >The event may have been removed or the link may be incorrect.</mat-card-content
+      >
       <mat-card-actions>
         <a matButton="filled" routerLink="/events">Browse events</a>
       </mat-card-actions>

@@ -5,10 +5,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 
 import { Event } from '../../../../core/models';
+import { AuthService } from '../../../../core/services/auth.service';
+import { BookingsService } from '../../../../core/services/bookings.service';
 import { EventsService } from '../../../../core/services/events.service';
 
 @Component({
@@ -30,10 +32,16 @@ export class EventDetails implements OnInit {
   protected event: Event | undefined;
   protected isLoading = true;
   protected errorMessage = '';
+  protected isBooking = false;
+  protected bookingMessage = '';
+  protected bookingError = '';
 
+  private readonly authService = inject(AuthService);
+  private readonly bookingsService = inject(BookingsService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly eventsService = inject(EventsService);
 
   private readonly categoryDetails: Record<
@@ -94,6 +102,8 @@ export class EventDetails implements OnInit {
         tap((eventId) => {
           this.event = undefined;
           this.errorMessage = '';
+          this.bookingMessage = '';
+          this.bookingError = '';
           this.isLoading = Boolean(eventId);
           this.changeDetectorRef.markForCheck();
         }),
@@ -114,6 +124,37 @@ export class EventDetails implements OnInit {
           this.changeDetectorRef.markForCheck();
         },
       });
+  }
+
+  protected bookEvent(event: Event): void {
+    this.bookingMessage = '';
+    this.bookingError = '';
+
+    if (!this.authService.isAuthenticated()) {
+      void this.router.navigate(['/login']);
+      return;
+    }
+
+    if (event.availableSeats <= 0) {
+      this.bookingError = 'No seats are available for this event.';
+      return;
+    }
+
+    this.isBooking = true;
+
+    this.bookingsService.createBooking(event.id).subscribe({
+      next: () => {
+        event.availableSeats -= 1;
+        this.bookingMessage = 'Your ticket is booked. You can view it in My Bookings.';
+        this.isBooking = false;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.bookingError = 'Unable to book this event. Please try again.';
+        this.isBooking = false;
+        this.changeDetectorRef.markForCheck();
+      },
+    });
   }
 
   protected getAudience(event: Event): string {
