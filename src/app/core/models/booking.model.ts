@@ -6,5 +6,6 @@ export interface Booking {
   eventDate: string;
   quantity: number;
   totalPrice: number;
+  status: 'active' | 'cancelled';
   createdAt: string;
 }

@@ -1,4 +1,78 @@
 <section class="page">
-  <h1>My bookings</h1>
-  <p>Your booked events will appear here once booking data is connected.</p>
+  <header class="page-header">
+    <div>
+      <span class="badge">Reservations</span>
+      <h1>My bookings</h1>
+      <p>Review your reserved tickets, event dates, and booking status in one place.</p>
+    </div>
+
+    <a class="btn btn-secondary" routerLink="/events">Browse Events</a>
+  </header>
+
+  @if (isLoading) {
+    <div class="state-card">Loading your bookings...</div>
+  } @else if (errorMessage) {
+    <div class="state-card">
+      <strong>Bookings unavailable</strong>
+      <p>{{ errorMessage }}</p>
+      <button class="btn btn-primary" type="button" (click)="loadBookings()">Retry</button>
+    </div>
+  } @else if (bookings.length > 0) {
+    <div class="bookings-grid">
+      @for (booking of bookings; track booking.id) {
+        <article
+          class="booking-card"
+          [class.booking-card--cancelled]="booking.status === 'cancelled'"
+        >
+          <div class="booking-card__header">
+            <span
+              class="status-pill"
+              [class.status-pill--cancelled]="booking.status === 'cancelled'"
+            >
+              {{ booking.status }}
+            </span>
+            <span>{{ booking.createdAt | date: 'mediumDate' }}</span>
+          </div>
+
+          <h2>{{ booking.eventTitle }}</h2>
+
+          <dl>
+            <div>
+              <dt>Event date</dt>
+              <dd>{{ booking.eventDate | date: 'fullDate' }}</dd>
+            </div>
+            <div>
+              <dt>Tickets</dt>
+              <dd>{{ booking.quantity }}</dd>
+            </div>
+            <div>
+              <dt>Total</dt>
+              <dd>{{ booking.totalPrice | currency: 'USD' : 'symbol' : '1.0-0' }}</dd>
+            </div>
+          </dl>
+
+          <footer>
+            <a class="details-link" [routerLink]="['/events', booking.eventId]">View event</a>
+
+            @if (booking.status === 'active') {
+              <button
+                class="btn btn-secondary"
+                type="button"
+                [disabled]="cancellingBookingId === booking.id"
+                (click)="cancelBooking(booking)"
+              >
+                {{ cancellingBookingId === booking.id ? 'Cancelling...' : 'Cancel booking' }}
+              </button>
+            }
+          </footer>
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="state-card">
+      <strong>No bookings yet</strong>
+      <p>Your reserved events will appear here after you book a ticket.</p>
+      <a class="btn btn-primary" routerLink="/events">Find an event</a>
+    </div>
+  }
 </section>
