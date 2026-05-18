@@ -4,8 +4,8 @@
       <span class="badge">Event booking dashboard</span>
       <h1>Discover and book standout events in one modern workspace.</h1>
       <p>
-        Evently helps you browse curated events, reserve seats, and manage bookings with a
-        fast dashboard built for busy teams and active communities.
+        Evently helps you browse curated events, reserve seats, and manage bookings with a fast
+        dashboard built for busy teams and active communities.
       </p>
 
       <div class="hero__actions">
@@ -19,7 +19,7 @@
       <div class="preview-card__body">
         <span class="badge">Featured</span>
         <h2>Product Leaders Summit</h2>
-        <p>Sofia Tech Park · Jun 24</p>
+        <p>Sofia Tech Park &middot; Jun 24</p>
         <div class="preview-card__footer">
           <span>$79</span>
           <span>128 seats</span>
@@ -44,8 +44,15 @@
     </div>
 
     <div class="category-grid">
-      @for (category of categories; track category) {
-        <article class="category-card">{{ category }}</article>
+      @for (category of categories; track category.title) {
+        <article class="category-card">
+          <img [src]="category.imageUrl" [alt]="category.title" loading="lazy" />
+          <div>
+            <span>{{ category.meta }}</span>
+            <h3>{{ category.title }}</h3>
+            <p>{{ category.description }}</p>
+          </div>
+        </article>
       }
     </div>
   </section>
@@ -78,25 +85,28 @@
 
     @if (isLoadingEvents) {
       <div class="events-placeholder card">Loading featured events...</div>
-    } @else if (featuredEvents.length > 0) {
+    } @else {
       <div class="featured-grid">
-        @for (event of featuredEvents; track event.id) {
+        @for (
+          event of featuredEvents.length > 0 ? featuredEvents : fallbackFeaturedEvents;
+          track event.id
+        ) {
           <article class="featured-card">
             <img [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
             <div>
               <span class="badge">{{ event.category }}</span>
               <h3>{{ event.title }}</h3>
-              <p>{{ event.location }} · {{ event.date | date: 'mediumDate' }}</p>
+              <p>{{ event.location }} &middot; {{ event.date | date: 'mediumDate' }}</p>
               <footer>
                 <span>{{ event.price | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
-                <a routerLink="/events/{{ event.id }}">Details</a>
+                <a [routerLink]="featuredEvents.length > 0 ? ['/events', event.id] : ['/events']">
+                  Details
+                </a>
               </footer>
             </div>
           </article>
         }
       </div>
-    } @else {
-      <div class="events-placeholder card">Featured events will appear here once events are added.</div>
     }
   </section>
 </section>
