@@ -7,7 +7,11 @@ const configureSrvDns = (mongoUri: string): void => {
     return;
   }
 
-  const dnsServers = (process.env.MONGO_DNS_SERVERS ?? '8.8.8.8,1.1.1.1')
+  if (!process.env.MONGO_DNS_SERVERS) {
+    return;
+  }
+
+  const dnsServers = process.env.MONGO_DNS_SERVERS
     .split(',')
     .map((server) => server.trim())
     .filter(Boolean);
@@ -26,5 +30,7 @@ export const connectDB = async (): Promise<void> => {
 
   configureSrvDns(mongoUri);
 
-  await mongoose.connect(mongoUri);
+  await mongoose.connect(mongoUri, {
+    serverSelectionTimeoutMS: 10000
+  });
 };

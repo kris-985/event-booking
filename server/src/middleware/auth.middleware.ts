@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 
-import { UserRole } from '../models/User';
+import { User, UserRole } from '../models/User';
 
 export interface AuthUser {
   userId: string;
@@ -17,7 +17,11 @@ interface TokenPayload extends JwtPayload {
   role: UserRole;
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authMiddleware = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
@@ -36,14 +40,21 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
   try {
     const decoded = jwt.verify(token, jwtSecret) as TokenPayload;
 
-    if (!decoded.userId || !decoded.role) {
+    if (!decoded.userId) {
       res.status(401).json({ message: 'Invalid token payload' });
+      return;
+    }
+
+    const user = await User.findById(decoded.userId).select('role');
+
+    if (!user) {
+      res.status(401).json({ message: 'User not found' });
       return;
     }
 
     req.user = {
       userId: decoded.userId,
-      role: decoded.role
+      role: user.role
     };
 
     next();
