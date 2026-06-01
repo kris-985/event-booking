@@ -8,7 +8,7 @@ import { Booking } from '../models';
 type ApiBooking = Omit<Booking, 'id' | 'userId' | 'eventId'> & {
   _id: string;
   id?: string;
-  userId: string | { _id?: string; id?: string };
+  userId: string | { _id?: string; id?: string; name?: string; email?: string };
   eventId: string | { _id?: string; id?: string };
 };
 
@@ -47,6 +47,8 @@ export class BookingsService {
     return {
       id: booking.id ?? booking._id,
       userId: this.toId(booking.userId),
+      userName: this.toUserName(booking.userId),
+      userEmail: this.toUserEmail(booking.userId),
       eventId: this.toId(booking.eventId),
       eventTitle: booking.eventTitle,
       eventDate: booking.eventDate,
@@ -59,5 +61,13 @@ export class BookingsService {
 
   private toId(value: string | { _id?: string; id?: string }): string {
     return typeof value === 'string' ? value : (value.id ?? value._id ?? '');
+  }
+
+  private toUserName(value: ApiBooking['userId']): string | undefined {
+    return typeof value === 'string' ? undefined : value.name;
+  }
+
+  private toUserEmail(value: ApiBooking['userId']): string | undefined {
+    return typeof value === 'string' ? undefined : value.email;
   }
 }

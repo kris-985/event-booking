@@ -78,7 +78,9 @@ router.get('/my', authMiddleware, async (req: AuthRequest, res, next) => {
 
 router.get('/', authMiddleware, roleMiddleware('admin'), async (_req, res, next) => {
   try {
-    const bookings = await Booking.find().sort({ createdAt: -1 });
+    const bookings = await Booking.find()
+      .populate('userId', 'name email')
+      .sort({ createdAt: -1 });
 
     res.json(bookings);
   } catch (error) {
