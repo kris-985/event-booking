@@ -2,10 +2,13 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
-import { Booking, Event } from '../../../../core/models';
+import { Booking, Event, User } from '../../../../core/models';
+import { AuthService } from '../../../../core/services/auth.service';
 import { BookingsService } from '../../../../core/services/bookings.service';
 import { EventsService } from '../../../../core/services/events.service';
+import { UsersService } from '../../../../core/services/users.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -17,6 +20,7 @@ import { EventsService } from '../../../../core/services/events.service';
 export class AdminDashboard implements OnInit {
   protected events: Event[] = [];
   protected bookings: Booking[] = [];
+  protected users: User[] = [];
   protected isLoading = true;
   protected errorMessage = '';
   protected successMessage = '';
@@ -25,10 +29,12 @@ export class AdminDashboard implements OnInit {
   protected deletingEventId = '';
   protected cancellingBookingId = '';
 
+  private readonly authService = inject(AuthService);
   private readonly bookingsService = inject(BookingsService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly eventsService = inject(EventsService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly usersService = inject(UsersService);
 
   protected readonly eventForm = this.formBuilder.nonNullable.group({
     title: ['', Validators.required],
@@ -42,7 +48,26 @@ export class AdminDashboard implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadDashboard();
+    this.authService.getCurrentUser().subscribe({
+      next: () => {
+        if (!this.isAdmin) {
+          this.isLoading = false;
+          this.changeDetectorRef.markForCheck();
+          return;
+        }
+
+        this.loadDashboard();
+      },
+      error: () => {
+        this.errorMessage = 'Unable to verify admin access.';
+        this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    });
+  }
+
+  protected get isAdmin(): boolean {
+    return this.authService.isAdminSignal();
   }
 
   protected get activeBookingsCount(): number {
@@ -59,21 +84,79 @@ export class AdminDashboard implements OnInit {
       .reduce((total, booking) => total + booking.totalPrice, 0);
   }
 
+  protected get soldTicketsCount(): number {
+    return this.bookings
+      .filter((booking) => booking.status === 'active')
+      .reduce((total, booking) => total + booking.quantity, 0);
+  }
+
   protected get totalSeats(): number {
     return this.events.reduce((total, event) => total + event.availableSeats, 0);
   }
 
+  protected get registeredUsersCount(): number {
+    return this.users.length;
+  }
+
+  protected get adminUsersCount(): number {
+    return this.users.filter((user) => user.role === 'admin').length;
+  }
+
+  protected get customerUsersCount(): number {
+    return this.users.filter((user) => user.role === 'user').length;
+  }
+
+  protected get recentUsers(): User[] {
+    return this.users.slice(0, 6);
+  }
+
+  protected get topEventsBySales(): Array<{ title: string; tickets: number; revenue: number }> {
+    const salesByEvent = new Map<string, { title: string; tickets: number; revenue: number }>();
+
+    for (const booking of this.bookings) {
+      if (booking.status !== 'active') {
+        continue;
+      }
+
+      const current = salesByEvent.get(booking.eventId) ?? {
+        title: booking.eventTitle,
+        tickets: 0,
+        revenue: 0
+      };
+
+      current.tickets += booking.quantity;
+      current.revenue += booking.totalPrice;
+      salesByEvent.set(booking.eventId, current);
+    }
+
+    return Array.from(salesByEvent.values())
+      .sort((first, second) => second.tickets - first.tickets)
+      .slice(0, 5);
+  }
+
   protected loadDashboard(): void {
+    if (!this.isAdmin) {
+      this.isLoading = false;
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.eventsService.getEvents().subscribe({
-      next: (events) => {
+    forkJoin({
+      events: this.eventsService.getEvents(),
+      bookings: this.bookingsService.getAllBookings(),
+      users: this.usersService.getUsers()
+    }).subscribe({
+      next: ({ events, bookings, users }) => {
         this.events = events;
-        this.loadBookings();
+        this.bookings = bookings;
+        this.users = users;
+        this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
       },
       error: () => {
-        this.errorMessage = 'Unable to load events.';
+        this.errorMessage = 'Unable to load admin data.';
         this.isLoading = false;
         this.changeDetectorRef.markForCheck();
       }
@@ -222,21 +305,6 @@ export class AdminDashboard implements OnInit {
     const control = this.eventForm.controls[controlName];
 
     return control.hasError(error) && (control.dirty || control.touched);
-  }
-
-  private loadBookings(): void {
-    this.bookingsService.getAllBookings().subscribe({
-      next: (bookings) => {
-        this.bookings = bookings;
-        this.isLoading = false;
-        this.changeDetectorRef.markForCheck();
-      },
-      error: () => {
-        this.errorMessage = 'Unable to load bookings.';
-        this.isLoading = false;
-        this.changeDetectorRef.markForCheck();
-      }
-    });
   }
 
   private toDateTimeInputValue(value: string): string {

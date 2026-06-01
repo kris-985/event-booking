@@ -9,7 +9,16 @@
     <button class="btn btn-secondary" type="button" (click)="loadDashboard()">Refresh</button>
   </header>
 
-  @if (isLoading) {
+  @if (!isAdmin) {
+    <div class="state-card access-card">
+      <strong>Admin access required</strong>
+      <p>
+        This page is reserved for administrators. Your account can browse events and manage personal
+        bookings, but admin reports and management tools are hidden.
+      </p>
+      <a class="btn btn-primary" routerLink="/events">Go to events</a>
+    </div>
+  } @else if (isLoading) {
     <div class="state-card">Loading admin dashboard...</div>
   } @else {
     @if (errorMessage) {
@@ -30,12 +39,84 @@
         <strong>{{ totalSeats }}</strong>
       </article>
       <article class="stat-card">
-        <span>Active bookings</span>
-        <strong>{{ activeBookingsCount }}</strong>
+        <span>Sold tickets</span>
+        <strong>{{ soldTicketsCount }}</strong>
       </article>
       <article class="stat-card">
         <span>Revenue</span>
         <strong>{{ totalRevenue | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Active bookings</span>
+        <strong>{{ activeBookingsCount }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Registered users</span>
+        <strong>{{ registeredUsersCount }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Customers</span>
+        <strong>{{ customerUsersCount }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Admins</span>
+        <strong>{{ adminUsersCount }}</strong>
+      </article>
+    </section>
+
+    <section class="insights-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Sales</span>
+            <h2>Top events</h2>
+          </div>
+        </div>
+
+        @if (topEventsBySales.length > 0) {
+          <div class="metric-list">
+            @for (event of topEventsBySales; track event.title) {
+              <div class="metric-row">
+                <span>{{ event.title }}</span>
+                <strong>
+                  {{ event.tickets }} sold · {{ event.revenue | currency: 'USD' : 'symbol' : '1.0-0' }}
+                </strong>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-panel empty-panel--compact">No ticket sales yet.</div>
+        }
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Users</span>
+            <h2>Recent registrations</h2>
+          </div>
+        </div>
+
+        @if (recentUsers.length > 0) {
+          <div class="user-list">
+            @for (user of recentUsers; track user.id) {
+              <div class="user-row">
+                <div>
+                  <strong>{{ user.name }}</strong>
+                  <span>{{ user.email }}</span>
+                </div>
+                <div>
+                  <span class="role-pill" [class.role-pill--admin]="user.role === 'admin'">
+                    {{ user.role }}
+                  </span>
+                  <small>{{ user.createdAt | date: 'mediumDate' }}</small>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-panel empty-panel--compact">No registered users yet.</div>
+        }
       </article>
     </section>
 
@@ -179,6 +260,7 @@
             <thead>
               <tr>
                 <th>Event</th>
+                <th>Buyer</th>
                 <th>Date</th>
                 <th>Total</th>
                 <th>Status</th>
@@ -191,6 +273,12 @@
                 <tr>
                   <td>
                     <a [routerLink]="['/events', booking.eventId]">{{ booking.eventTitle }}</a>
+                  </td>
+                  <td>
+                    <div class="buyer-cell">
+                      <strong>{{ booking.userName || 'Unknown user' }}</strong>
+                      <span>{{ booking.userEmail || booking.userId }}</span>
+                    </div>
                   </td>
                   <td>{{ booking.eventDate | date: 'mediumDate' }}</td>
                   <td>{{ booking.totalPrice | currency: 'USD' : 'symbol' : '1.0-0' }}</td>

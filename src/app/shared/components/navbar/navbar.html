@@ -38,11 +38,9 @@
       <a routerLink="/my-bookings" routerLinkActive="navbar__link--active" (click)="closeMenu()">
         My Bookings
       </a>
-      @if (authService.isAdminSignal()) {
-        <a routerLink="/admin" routerLinkActive="navbar__link--active" (click)="closeMenu()">
-          Admin
-        </a>
-      }
+      <a routerLink="/admin" routerLinkActive="navbar__link--active" (click)="closeMenu()">
+        Admin
+      </a>
     </div>
 
     <div class="navbar__actions">
