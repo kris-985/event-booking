@@ -1,4 +1,228 @@
-<section class="page">
-  <h1>Admin dashboard</h1>
-  <p>Admin event and booking management will live here.</p>
+<section class="admin-page">
+  <header class="page-header">
+    <div>
+      <span class="badge">Admin</span>
+      <h1>Dashboard</h1>
+      <p>Manage events, track active bookings, and handle reservation changes.</p>
+    </div>
+
+    <button class="btn btn-secondary" type="button" (click)="loadDashboard()">Refresh</button>
+  </header>
+
+  @if (isLoading) {
+    <div class="state-card">Loading admin dashboard...</div>
+  } @else {
+    @if (errorMessage) {
+      <div class="alert alert--error">{{ errorMessage }}</div>
+    }
+
+    @if (successMessage) {
+      <div class="alert alert--success">{{ successMessage }}</div>
+    }
+
+    <section class="stats-grid" aria-label="Admin summary">
+      <article class="stat-card">
+        <span>Events</span>
+        <strong>{{ events.length }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Available seats</span>
+        <strong>{{ totalSeats }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Active bookings</span>
+        <strong>{{ activeBookingsCount }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Revenue</span>
+        <strong>{{ totalRevenue | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+      </article>
+    </section>
+
+    <section class="management-grid">
+      <article class="panel event-form-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">{{ editingEventId ? 'Edit event' : 'New event' }}</span>
+            <h2>{{ editingEventId ? 'Update event' : 'Create event' }}</h2>
+          </div>
+
+          @if (editingEventId) {
+            <button class="text-button" type="button" (click)="resetForm()">Cancel edit</button>
+          }
+        </div>
+
+        <form class="event-form" [formGroup]="eventForm" (ngSubmit)="submitEvent()">
+          <label>
+            <span>Title</span>
+            <input class="input" type="text" formControlName="title" />
+            @if (hasError('title', 'required')) {
+              <small>Title is required.</small>
+            }
+          </label>
+
+          <label>
+            <span>Category</span>
+            <input class="input" type="text" formControlName="category" />
+            @if (hasError('category', 'required')) {
+              <small>Category is required.</small>
+            }
+          </label>
+
+          <label>
+            <span>Location</span>
+            <input class="input" type="text" formControlName="location" />
+            @if (hasError('location', 'required')) {
+              <small>Location is required.</small>
+            }
+          </label>
+
+          <label>
+            <span>Date</span>
+            <input class="input" type="datetime-local" formControlName="date" />
+            @if (hasError('date', 'required')) {
+              <small>Date is required.</small>
+            }
+          </label>
+
+          <label>
+            <span>Price</span>
+            <input class="input" type="number" min="0" formControlName="price" />
+            @if (hasError('price', 'min')) {
+              <small>Price cannot be negative.</small>
+            }
+          </label>
+
+          <label>
+            <span>Seats</span>
+            <input class="input" type="number" min="0" formControlName="availableSeats" />
+            @if (hasError('availableSeats', 'min')) {
+              <small>Seats cannot be negative.</small>
+            }
+          </label>
+
+          <label class="field-wide">
+            <span>Image URL</span>
+            <input class="input" type="url" formControlName="imageUrl" />
+            @if (hasError('imageUrl', 'required')) {
+              <small>Image URL is required.</small>
+            }
+          </label>
+
+          <label class="field-wide">
+            <span>Description</span>
+            <textarea class="input" rows="5" formControlName="description"></textarea>
+            @if (hasError('description', 'required')) {
+              <small>Description is required.</small>
+            }
+          </label>
+
+          <button class="btn btn-primary field-wide" type="submit" [disabled]="savingEvent">
+            {{ savingEvent ? 'Saving...' : editingEventId ? 'Save changes' : 'Create event' }}
+          </button>
+        </form>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Catalog</span>
+            <h2>Events</h2>
+          </div>
+        </div>
+
+        @if (events.length > 0) {
+          <div class="event-list">
+            @for (event of events; track event.id) {
+              <article class="event-row">
+                <img [src]="event.imageUrl" [alt]="event.title" loading="lazy" />
+
+                <div>
+                  <h3>{{ event.title }}</h3>
+                  <p>{{ event.location }} · {{ event.date | date: 'mediumDate' }}</p>
+                  <span>{{ event.category }} · {{ event.availableSeats }} seats</span>
+                </div>
+
+                <div class="row-actions">
+                  <a class="text-button" [routerLink]="['/events', event.id]">View</a>
+                  <button class="text-button" type="button" (click)="editEvent(event)">Edit</button>
+                  <button
+                    class="text-button text-button--danger"
+                    type="button"
+                    [disabled]="deletingEventId === event.id"
+                    (click)="deleteEvent(event)"
+                  >
+                    {{ deletingEventId === event.id ? 'Deleting...' : 'Delete' }}
+                  </button>
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="empty-panel">No events have been created yet.</div>
+        }
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <span class="eyebrow">Reservations</span>
+          <h2>Bookings</h2>
+        </div>
+        <span class="booking-count">{{ cancelledBookingsCount }} cancelled</span>
+      </div>
+
+      @if (bookings.length > 0) {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (booking of bookings; track booking.id) {
+                <tr>
+                  <td>
+                    <a [routerLink]="['/events', booking.eventId]">{{ booking.eventTitle }}</a>
+                  </td>
+                  <td>{{ booking.eventDate | date: 'mediumDate' }}</td>
+                  <td>{{ booking.totalPrice | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+                  <td>
+                    <span
+                      class="status-pill"
+                      [class.status-pill--cancelled]="booking.status === 'cancelled'"
+                    >
+                      {{ booking.status }}
+                    </span>
+                  </td>
+                  <td>{{ booking.createdAt | date: 'short' }}</td>
+                  <td>
+                    @if (booking.status === 'active') {
+                      <button
+                        class="text-button text-button--danger"
+                        type="button"
+                        [disabled]="cancellingBookingId === booking.id"
+                        (click)="cancelBooking(booking)"
+                      >
+                        {{ cancellingBookingId === booking.id ? 'Cancelling...' : 'Cancel' }}
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-panel">No bookings yet.</div>
+      }
+    </section>
+  }
 </section>

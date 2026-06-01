@@ -31,6 +31,12 @@ export class BookingsService {
       .pipe(map((bookings) => bookings.map((booking) => this.toBooking(booking))));
   }
 
+  getAllBookings(): Observable<Booking[]> {
+    return this.http
+      .get<ApiBooking[]>(this.bookingsUrl)
+      .pipe(map((bookings) => bookings.map((booking) => this.toBooking(booking))));
+  }
+
   cancelBooking(id: string): Observable<Booking> {
     return this.http
       .patch<ApiBooking>(`${this.bookingsUrl}/${id}/cancel`, {})
