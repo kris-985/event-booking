@@ -38,6 +38,7 @@ yarn-error.log
 testem.log
 dev-server.err
 dev-server.log
+server/server-dev.err
 /typings
 __screenshots__/
 
